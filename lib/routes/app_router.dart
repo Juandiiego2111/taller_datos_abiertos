@@ -20,47 +20,58 @@ final GoRouter appRouter = GoRouter(
       name: 'departments',
       path: '/departments',
       builder: (context, state) => const DepartmentListView(),
-    ),
-    GoRoute(
-      name: 'departmentDetail',
-      path: '/departments/:id',
-      builder: (context, state) =>
-          DepartmentDetailView(id: state.pathParameters['id'] ?? '0'),
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'department-detail',
+          builder: (context, state) => DepartmentDetailView(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
+      ],
     ),
     GoRoute(
       name: 'presidents',
       path: '/presidents',
       builder: (context, state) => const PresidentListView(),
-    ),
-    GoRoute(
-      name: 'presidentDetail',
-      path: '/presidents/:id',
-      builder: (context, state) =>
-          PresidentDetailView(id: state.pathParameters['id'] ?? '0'),
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'president-detail',
+          builder: (context, state) => PresidentDetailView(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
+      ],
     ),
     GoRoute(
       name: 'naturalAreas',
       path: '/natural-areas',
       builder: (context, state) => const NaturalAreaListView(),
-    ),
-    GoRoute(
-      name: 'naturalAreaDetail',
-      path: '/natural-areas/:id',
-      builder: (context, state) =>
-          NaturalAreaDetailView(id: state.pathParameters['id'] ?? '0'),
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'natural-area-detail',
+          builder: (context, state) => NaturalAreaDetailView(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
+      ],
     ),
     GoRoute(
       name: 'touristicAttractions',
       path: '/touristic-attractions',
       builder: (context, state) => const TouristicAttractionListView(),
-    ),
-    GoRoute(
-      name: 'touristicAttractionDetail',
-      path: '/touristic-attractions/:id',
-      builder: (context, state) {
-        final id = int.parse(state.pathParameters['id'] ?? '0');
-        return TouristicAttractionDetailView(id: id);
-      },
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'touristic-attraction-detail',
+          builder: (context, state) {
+            final id = int.parse(state.pathParameters['id'] ?? '0');
+            return TouristicAttractionDetailView(id: id);
+          },
+        ),
+      ],
     ),
   ],
 );

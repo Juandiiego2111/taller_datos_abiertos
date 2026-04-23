@@ -7,12 +7,13 @@ import '../widgets/error_widget.dart';
 
 class TouristicAttractionListView extends StatefulWidget {
   const TouristicAttractionListView({super.key});
-
   @override
-  State<TouristicAttractionListView> createState() => _TouristicAttractionListViewState();
+  State<TouristicAttractionListView> createState() =>
+      _TouristicAttractionListViewState();
 }
 
-class _TouristicAttractionListViewState extends State<TouristicAttractionListView> {
+class _TouristicAttractionListViewState
+    extends State<TouristicAttractionListView> {
   late Future<List<TouristicAttraction>> _future;
 
   @override
@@ -58,9 +59,13 @@ class _TouristicAttractionListViewState extends State<TouristicAttractionListVie
                     backgroundColor: Color(0xFFE65100),
                     child: Icon(Icons.place, color: Colors.white),
                   ),
-                  title: Text(attr.name,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text(attr.city ?? attr.department ?? 'Sin ubicación'),
+                  title: Text(
+                    attr.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    attr.city ?? attr.department ?? 'Sin ubicación',
+                  ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () => context.goNamed(
                     'touristic-attraction-detail',

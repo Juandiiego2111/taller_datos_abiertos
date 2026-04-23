@@ -1,135 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../services/department_service.dart';
 import '../models/department_model.dart';
+import '../services/department_service.dart';
+import '../widgets/loading_widget.dart';
+import '../widgets/error_widget.dart';
 
 class DepartmentListView extends StatefulWidget {
-  const DepartmentListView({Key? key}) : super(key: key);
-
+  const DepartmentListView({super.key});
   @override
   State<DepartmentListView> createState() => _DepartmentListViewState();
 }
 
 class _DepartmentListViewState extends State<DepartmentListView> {
-  bool isLoading = true;
-  String? errorMessage;
-  List<Department> departments = [];
+  late Future<List<Department>> _future;
 
   @override
   void initState() {
     super.initState();
-    _loadDepartments();
-  }
-
-  Future<void> _loadDepartments() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
-
-    try {
-      final data = await DepartmentService.getDepartments();
-      setState(() {
-        departments = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = e.toString();
-        isLoading = false;
-      });
-    }
+    _future = DepartmentService.getDepartments();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/');
-              }
-            },
-          ),
-          title: const Text('Departamentos'),
-          backgroundColor: const Color(0xFF003087),
-          foregroundColor: Colors.white,
-        ),
-        body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (errorMessage != null) {
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/');
-              }
-            },
-          ),
-          title: const Text('Departamentos'),
-          backgroundColor: const Color(0xFF003087),
-          foregroundColor: Colors.white,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error, color: Colors.red, size: 48),
-              const SizedBox(height: 16),
-              Text(
-                errorMessage!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _loadDepartments,
-                child: const Text('Reintentar'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/');
-            }
-          },
+          onPressed: () => context.go('/'),
         ),
         title: const Text('Departamentos'),
-        backgroundColor: const Color(0xFF003087),
-        foregroundColor: Colors.white,
       ),
-      body: ListView.builder(
-        itemCount: departments.length,
-        itemBuilder: (context, index) {
-          final department = departments[index];
-          return ListTile(
-            title: Text(department.name),
-            subtitle: Text(department.capital ?? 'Sin capital'),
-            onTap: () {
-              context.goNamed(
-                'departmentDetail',
-                pathParameters: {'id': department.id.toString()},
+      body: FutureBuilder<List<Department>>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingWidget();
+          }
+          if (snapshot.hasError) {
+            return AppErrorWidget(
+              message: snapshot.error.toString(),
+              onRetry: () => setState(() {
+                _future = DepartmentService.getDepartments();
+              }),
+            );
+          }
+          final items = snapshot.data!;
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final dept = items[index];
+              return GestureDetector(
+                onTap: () => context.goNamed(
+                  'department-detail',
+                  pathParameters: {'id': dept.id.toString()},
+                ),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.07),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: const Color(
+                          0xFF003893,
+                        ).withValues(alpha: 0.12),
+                        child: Text(
+                          dept.name[0],
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF003893),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              dept.name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A1A2E),
+                              ),
+                            ),
+                            if (dept.description != null)
+                              Text(
+                                dept.description!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
           );
