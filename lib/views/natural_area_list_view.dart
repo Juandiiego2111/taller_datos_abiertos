@@ -7,6 +7,7 @@ import '../widgets/error_widget.dart';
 
 class NaturalAreaListView extends StatefulWidget {
   const NaturalAreaListView({super.key});
+
   @override
   State<NaturalAreaListView> createState() => _NaturalAreaListViewState();
 }
@@ -69,47 +70,83 @@ class _NaturalAreaListViewState extends State<NaturalAreaListView> {
                       ),
                     ],
                   ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundColor: const Color(
-                          0xFF2E7D32,
-                        ).withValues(alpha: 0.12),
-                        child: const Icon(
-                          Icons.park,
-                          color: Color(0xFF2E7D32),
-                          size: 26,
-                        ),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: const Color(
+                              0xFF2E7D32,
+                            ).withValues(alpha: 0.12),
+                            child: const Icon(
+                              Icons.park,
+                              color: Color(0xFF2E7D32),
+                              size: 26,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  area.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1A1A2E),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  area.department != null &&
+                                          area.department!['name'] != null
+                                      ? area.department!['name'].toString()
+                                      : area.departmentId != null
+                                      ? 'Departamento ID: ${area.departmentId}'
+                                      : 'Sin departamento',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      if (area.landArea != null || area.daneCode != null) ...[
+                        const SizedBox(height: 12),
+                        const Divider(height: 1),
+                        const SizedBox(height: 8),
+                        Row(
                           children: [
-                            Text(
-                              area.name,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1A1A2E),
+                            if (area.landArea != null)
+                              Expanded(
+                                child: _buildInfoChip(
+                                  Icons.landscape,
+                                  '${area.landArea!.toStringAsFixed(0)} km²',
+                                  const Color(0xFF2E7D32),
+                                ),
                               ),
-                            ),
-                            Text(
-                              area.departmentName ?? 'Sin departamento',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey.shade600,
+                            if (area.daneCode != null)
+                              Expanded(
+                                child: _buildInfoChip(
+                                  Icons.code,
+                                  'DANE: ${area.daneCode}',
+                                  const Color(0xFFE65100),
+                                ),
                               ),
-                            ),
                           ],
                         ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -117,6 +154,35 @@ class _NaturalAreaListViewState extends State<NaturalAreaListView> {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildInfoChip(IconData icon, String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                color: color,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
