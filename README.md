@@ -47,40 +47,7 @@ Aplicación móvil desarrollada en **Flutter** que consume datos reales de la AP
 
 La aplicación sigue una arquitectura por capas que separa responsabilidades:
 
-lib/
-
-├── config/
-│   └── environment.dart          # Variables de entorno con flutter_dotenv
-├── models/
-│   ├── department_model.dart     # Modelo con fromJson y toJson
-│   ├── president_model.dart
-│   ├── natural_area_model.dart
-│   └── touristic_attraction_model.dart
-├── routes/
-│   └── app_router.dart           # Configuración de go_router
-├── services/
-│   ├── api_service.dart          # Servicio HTTP base con manejo de errores
-│   ├── department_service.dart
-│   ├── president_service.dart
-│   ├── natural_area_service.dart
-│   └── touristic_attraction_service.dart
-├── themes/
-│   └── app_theme.dart            # Tema global con colores de la bandera colombiana
-├── views/
-│   ├── dashboard_view.dart       # Pantalla principal con cards
-│   ├── department_list_view.dart
-│   ├── department_detail_view.dart
-│   ├── president_list_view.dart
-│   ├── president_detail_view.dart
-│   ├── natural_area_list_view.dart
-│   ├── natural_area_detail_view.dart
-│   ├── touristic_attraction_list_view.dart
-│   └── touristic_attraction_detail_view.dart
-├── widgets/
-│   ├── dashboard_card.dart       # Card reutilizable para el dashboard
-│   ├── loading_widget.dart       # Indicador de carga
-│   └── error_widget.dart         # Widget de error con botón de reintento
-└── main.dart
+<img width="369" height="825" alt="image" src="https://github.com/user-attachments/assets/c3d228ef-12aa-4754-99db-02ef85c599ed" />
 
 ---
 
