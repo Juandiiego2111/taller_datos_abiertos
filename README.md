@@ -46,6 +46,7 @@ Aplicación móvil desarrollada en **Flutter** que consume datos reales de la AP
 ## Arquitectura y Estructura del Proyecto
 
 La aplicación sigue una arquitectura por capas que separa responsabilidades:
+
 lib/
 ├── config/
 │   └── environment.dart          # Variables de entorno con flutter_dotenv
