@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../services/president_service.dart';
 import '../models/president_model.dart';
 
@@ -12,7 +13,6 @@ class PresidentDetailView extends StatefulWidget {
 }
 
 class _PresidentDetailViewState extends State<PresidentDetailView> {
-  final PresidentService _service = PresidentService();
   bool isLoading = true;
   String? errorMessage;
   President? president;
@@ -30,7 +30,9 @@ class _PresidentDetailViewState extends State<PresidentDetailView> {
     });
 
     try {
-      final data = await _service.getPresidentById(int.parse(widget.id));
+      final data = await PresidentService.getPresidentById(
+        int.parse(widget.id),
+      );
       setState(() {
         president = data;
         isLoading = false;
@@ -49,7 +51,16 @@ class _PresidentDetailViewState extends State<PresidentDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Presidente'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/presidents');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -61,7 +72,16 @@ class _PresidentDetailViewState extends State<PresidentDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Presidente'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/presidents');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -91,7 +111,16 @@ class _PresidentDetailViewState extends State<PresidentDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Presidente'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/presidents');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -102,7 +131,16 @@ class _PresidentDetailViewState extends State<PresidentDetailView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${president!.name} ${president!.lastName}'),
-        leading: const BackButton(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/presidents');
+            }
+          },
+        ),
         backgroundColor: const Color(0xFF003087),
         foregroundColor: Colors.white,
       ),

@@ -29,7 +29,7 @@ class _PresidentListViewState extends State<PresidentListView> {
     });
 
     try {
-      final data = await _service.getPresidents();
+      final data = await PresidentService.getPresidents();
       setState(() {
         presidents = data;
         isLoading = false;
@@ -48,6 +48,16 @@ class _PresidentListViewState extends State<PresidentListView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Presidentes'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -59,6 +69,16 @@ class _PresidentListViewState extends State<PresidentListView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Presidentes'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -87,6 +107,16 @@ class _PresidentListViewState extends State<PresidentListView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Presidentes'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/');
+            }
+          },
+        ),
         backgroundColor: const Color(0xFF003087),
         foregroundColor: Colors.white,
       ),

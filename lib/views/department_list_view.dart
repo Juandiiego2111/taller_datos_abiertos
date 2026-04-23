@@ -11,7 +11,6 @@ class DepartmentListView extends StatefulWidget {
 }
 
 class _DepartmentListViewState extends State<DepartmentListView> {
-  final DepartmentService _service = DepartmentService();
   bool isLoading = true;
   String? errorMessage;
   List<Department> departments = [];
@@ -29,7 +28,7 @@ class _DepartmentListViewState extends State<DepartmentListView> {
     });
 
     try {
-      final data = await _service.getDepartments();
+      final data = await DepartmentService.getDepartments();
       setState(() {
         departments = data;
         isLoading = false;
@@ -47,6 +46,16 @@ class _DepartmentListViewState extends State<DepartmentListView> {
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
           title: const Text('Departamentos'),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
@@ -58,6 +67,16 @@ class _DepartmentListViewState extends State<DepartmentListView> {
     if (errorMessage != null) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
           title: const Text('Departamentos'),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
@@ -86,6 +105,16 @@ class _DepartmentListViewState extends State<DepartmentListView> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/');
+            }
+          },
+        ),
         title: const Text('Departamentos'),
         backgroundColor: const Color(0xFF003087),
         foregroundColor: Colors.white,

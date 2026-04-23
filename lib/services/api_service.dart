@@ -1,46 +1,46 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import '../config/environment.dart';
+
+class ApiException implements Exception {
+  final String message;
+  final int? statusCode;
+  ApiException(this.message, {this.statusCode});
+  @override
+  String toString() => 'ApiException: $message (status: $statusCode)';
+}
 
 class ApiService {
-  final String baseUrl =
-      dotenv.env['BASE_URL'] ?? 'https://api-colombia.com/api/v1';
+  static final String _baseUrl = Environment.baseUrl;
 
-  Future<List<dynamic>> getDepartments() async {
-    final response = await http.get(Uri.parse('$baseUrl/departments'));
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load departments');
-    }
-  }
+  static Future<dynamic> get(String endpoint) async {
+    final uri = Uri.parse('$_baseUrl$endpoint');
+    try {
+      final response = await http
+          .get(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 15));
 
-  Future<List<dynamic>> getPresidents() async {
-    final response = await http.get(Uri.parse('$baseUrl/presidents'));
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load presidents');
-    }
-  }
-
-  Future<List<dynamic>> getNaturalAreas() async {
-    final response = await http.get(Uri.parse('$baseUrl/natural-areas'));
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load natural areas');
-    }
-  }
-
-  Future<List<dynamic>> getTouristicAttractions() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/touristic-attractions'),
-    );
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load touristic attractions');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else if (response.statusCode == 404) {
+        throw ApiException('Recurso no encontrado', statusCode: 404);
+      } else if (response.statusCode >= 500) {
+        throw ApiException(
+          'Error del servidor',
+          statusCode: response.statusCode,
+        );
+      } else {
+        throw ApiException('Error inesperado', statusCode: response.statusCode);
+      }
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error de conexión: ${e.toString()}');
     }
   }
 }

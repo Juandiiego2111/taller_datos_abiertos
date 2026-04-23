@@ -1,33 +1,30 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/touristic_attraction_model.dart';
 
 class TouristicAttractionService {
-  final String baseUrl =
-      dotenv.env['BASE_URL'] ?? 'https://api-colombia.com/api/v1';
+  static const String _base = 'https://api-colombia.com/api/v1';
 
-  Future<List<TouristicAttraction>> getTouristicAttractions() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/touristic-attractions'),
-    );
+  static Future<List<TouristicAttraction>> getTouristicAttractions() async {
+    final response = await http
+        .get(Uri.parse('$_base/TouristicAttraction'),
+            headers: {'Accept': 'application/json'})
+        .timeout(const Duration(seconds: 15));
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => TouristicAttraction.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load touristic attractions');
+      return data.map((e) => TouristicAttraction.fromJson(e)).toList();
     }
+    throw Exception('Failed to load touristic attractions: ${response.statusCode}');
   }
 
-  Future<TouristicAttraction> getTouristicAttractionById(int id) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/touristic-attractions/$id'),
-    );
+  static Future<TouristicAttraction> getTouristicAttractionById(int id) async {
+    final response = await http
+        .get(Uri.parse('$_base/TouristicAttraction/$id'),
+            headers: {'Accept': 'application/json'})
+        .timeout(const Duration(seconds: 15));
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return TouristicAttraction.fromJson(data);
-    } else {
-      throw Exception('Failed to load touristic attraction');
+      return TouristicAttraction.fromJson(jsonDecode(response.body));
     }
+    throw Exception('Failed to load attraction: ${response.statusCode}');
   }
 }

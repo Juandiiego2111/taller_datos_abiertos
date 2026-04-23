@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../services/department_service.dart';
 import '../models/department_model.dart';
 
@@ -12,7 +13,6 @@ class DepartmentDetailView extends StatefulWidget {
 }
 
 class _DepartmentDetailViewState extends State<DepartmentDetailView> {
-  final DepartmentService _service = DepartmentService();
   bool isLoading = true;
   String? errorMessage;
   Department? department;
@@ -30,7 +30,9 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
     });
 
     try {
-      final data = await _service.getDepartmentById(int.parse(widget.id));
+      final data = await DepartmentService.getDepartmentById(
+        int.parse(widget.id),
+      );
       setState(() {
         department = data;
         isLoading = false;
@@ -49,7 +51,16 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Departamento'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/departments');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -61,7 +72,16 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Departamento'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/departments');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -91,7 +111,16 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Departamento'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/departments');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -102,7 +131,16 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(department!.name),
-        leading: const BackButton(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/departments');
+            }
+          },
+        ),
         backgroundColor: const Color(0xFF003087),
         foregroundColor: Colors.white,
       ),

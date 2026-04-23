@@ -11,7 +11,6 @@ class NaturalAreaListView extends StatefulWidget {
 }
 
 class _NaturalAreaListViewState extends State<NaturalAreaListView> {
-  final NaturalAreaService _service = NaturalAreaService();
   bool isLoading = true;
   String? errorMessage;
   List<NaturalArea> naturalAreas = [];
@@ -29,7 +28,7 @@ class _NaturalAreaListViewState extends State<NaturalAreaListView> {
     });
 
     try {
-      final data = await _service.getNaturalAreas();
+      final data = await NaturalAreaService.getNaturalAreas();
       setState(() {
         naturalAreas = data;
         isLoading = false;
@@ -47,6 +46,16 @@ class _NaturalAreaListViewState extends State<NaturalAreaListView> {
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
           title: const Text('Áreas Naturales'),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
@@ -58,6 +67,16 @@ class _NaturalAreaListViewState extends State<NaturalAreaListView> {
     if (errorMessage != null) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/');
+              }
+            },
+          ),
           title: const Text('Áreas Naturales'),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
@@ -86,6 +105,16 @@ class _NaturalAreaListViewState extends State<NaturalAreaListView> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/');
+            }
+          },
+        ),
         title: const Text('Áreas Naturales'),
         backgroundColor: const Color(0xFF003087),
         foregroundColor: Colors.white,

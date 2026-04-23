@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../services/natural_area_service.dart';
 import '../models/natural_area_model.dart';
 
@@ -30,7 +31,7 @@ class _NaturalAreaDetailViewState extends State<NaturalAreaDetailView> {
     });
 
     try {
-      final data = await _service.getNaturalAreaById(int.parse(widget.id));
+      final data = await NaturalAreaService.getNaturalAreaById(int.parse(widget.id));
       setState(() {
         naturalArea = data;
         isLoading = false;
@@ -49,7 +50,16 @@ class _NaturalAreaDetailViewState extends State<NaturalAreaDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Área Natural'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/natural-areas');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -61,7 +71,16 @@ class _NaturalAreaDetailViewState extends State<NaturalAreaDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Área Natural'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/natural-areas');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -91,7 +110,16 @@ class _NaturalAreaDetailViewState extends State<NaturalAreaDetailView> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Detalle de Área Natural'),
-          leading: const BackButton(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/natural-areas');
+              }
+            },
+          ),
           backgroundColor: const Color(0xFF003087),
           foregroundColor: Colors.white,
         ),
@@ -102,7 +130,16 @@ class _NaturalAreaDetailViewState extends State<NaturalAreaDetailView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(naturalArea!.name),
-        leading: const BackButton(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/natural-areas');
+            }
+          },
+        ),
         backgroundColor: const Color(0xFF003087),
         foregroundColor: Colors.white,
       ),

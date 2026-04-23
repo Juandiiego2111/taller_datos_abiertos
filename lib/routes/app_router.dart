@@ -57,8 +57,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       name: 'touristicAttractionDetail',
       path: '/touristic-attractions/:id',
-      builder: (context, state) =>
-          TouristicAttractionDetailView(id: state.pathParameters['id'] ?? '0'),
+      builder: (context, state) {
+        final id = int.parse(state.pathParameters['id'] ?? '0');
+        return TouristicAttractionDetailView(id: id);
+      },
     ),
   ],
 );
