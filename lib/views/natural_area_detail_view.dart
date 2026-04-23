@@ -1,193 +1,258 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../services/natural_area_service.dart';
 import '../models/natural_area_model.dart';
+import '../services/natural_area_service.dart';
+import '../widgets/error_widget.dart';
 
 class NaturalAreaDetailView extends StatefulWidget {
-  final String id;
-
-  const NaturalAreaDetailView({Key? key, required this.id}) : super(key: key);
+  final int id;
+  const NaturalAreaDetailView({super.key, required this.id});
 
   @override
   State<NaturalAreaDetailView> createState() => _NaturalAreaDetailViewState();
 }
 
 class _NaturalAreaDetailViewState extends State<NaturalAreaDetailView> {
-  final NaturalAreaService _service = NaturalAreaService();
-  bool isLoading = true;
-  String? errorMessage;
-  NaturalArea? naturalArea;
+  late Future<NaturalArea> _future;
 
   @override
   void initState() {
     super.initState();
-    _loadNaturalArea();
-  }
-
-  Future<void> _loadNaturalArea() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
-
-    try {
-      final data = await NaturalAreaService.getNaturalAreaById(int.parse(widget.id));
-      setState(() {
-        naturalArea = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = e.toString();
-        isLoading = false;
-      });
-    }
+    _future = NaturalAreaService.getNaturalAreaById(widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Detalle de Área Natural'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/natural-areas');
-              }
-            },
-          ),
-          backgroundColor: const Color(0xFF003087),
-          foregroundColor: Colors.white,
-        ),
-        body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (errorMessage != null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Detalle de Área Natural'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/natural-areas');
-              }
-            },
-          ),
-          backgroundColor: const Color(0xFF003087),
-          foregroundColor: Colors.white,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error, color: Colors.red, size: 48),
-              const SizedBox(height: 16),
-              Text(
-                errorMessage!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _loadNaturalArea,
-                child: const Text('Reintentar'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    if (naturalArea == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Detalle de Área Natural'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/natural-areas');
-              }
-            },
-          ),
-          backgroundColor: const Color(0xFF003087),
-          foregroundColor: Colors.white,
-        ),
-        body: const Center(child: Text('Área Natural no encontrada')),
-      );
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(naturalArea!.name),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/natural-areas');
-            }
-          },
-        ),
-        backgroundColor: const Color(0xFF003087),
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildInfoCard('Nombre', naturalArea!.name),
-              const SizedBox(height: 12),
-              _buildInfoCard(
-                'Descripción',
-                naturalArea!.description ?? 'No especificada',
+      body: FutureBuilder<NaturalArea>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFF2E7D32)),
+            );
+          }
+          if (snapshot.hasError) {
+            return AppErrorWidget(
+              message: snapshot.error.toString(),
+              onRetry: () => setState(() {
+                _future = NaturalAreaService.getNaturalAreaById(widget.id);
+              }),
+            );
+          }
+          final area = snapshot.data!;
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 220,
+                pinned: true,
+                backgroundColor: const Color(0xFF2E7D32),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => context.go('/natural-areas'),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    area.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  background: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF2E7D32), Color(0xFF1B5E20)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 20),
+                        Container(
+                          width: 90,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.park,
+                            size: 50,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              const SizedBox(height: 12),
-              _buildInfoCard(
-                'Departamento',
-                naturalArea!.departmentName ?? 'No especificado',
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF2E7D32), Color(0xFF43A047)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Departamento',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    area.departmentName ?? 'No registrado',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (area.description != null &&
+                          area.description!.isNotEmpty) ...[
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Descripción',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2E7D32),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: const Border(
+                              left: BorderSide(
+                                color: Color(0xFF2E7D32),
+                                width: 4,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            area.description!,
+                            style: const TextStyle(fontSize: 14, height: 1.6),
+                          ),
+                        ),
+                      ] else ...[
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                color: Colors.grey.shade500,
+                              ),
+                              const SizedBox(width: 12),
+                              const Text(
+                                'Sin descripción disponible',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.06),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: const Color(
+                                  0xFF2E7D32,
+                                ).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.eco,
+                                color: Color(0xFF2E7D32),
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Tipo',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Área Natural Protegida',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(String label, String value) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(value, style: const TextStyle(fontSize: 16)),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

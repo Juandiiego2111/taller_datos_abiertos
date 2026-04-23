@@ -6,6 +6,7 @@ class President {
   final String? politicalParty;
   final String? startPeriodDate;
   final String? endPeriodDate;
+  final String? image;
 
   President({
     required this.id,
@@ -15,6 +16,7 @@ class President {
     this.politicalParty,
     this.startPeriodDate,
     this.endPeriodDate,
+    this.image,
   });
 
   factory President.fromJson(Map<String, dynamic> json) => President(
@@ -25,6 +27,7 @@ class President {
     politicalParty: json['politicalParty'],
     startPeriodDate: json['startPeriodDate'],
     endPeriodDate: json['endPeriodDate'],
+    image: json['image'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +38,6 @@ class President {
     'politicalParty': politicalParty,
     'startPeriodDate': startPeriodDate,
     'endPeriodDate': endPeriodDate,
+    'image': image,
   };
 }
