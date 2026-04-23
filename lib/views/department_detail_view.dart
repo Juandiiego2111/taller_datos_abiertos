@@ -134,7 +134,9 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
                             child: _infoCard(
                               Icons.straighten,
                               'Superficie',
-                              dept.surface ?? 'N/A',
+                              dept.surface != null
+                                  ? '${dept.surface} km²'
+                                  : 'N/A',
                               const Color(0xFF2E7D32),
                             ),
                           ),
@@ -167,7 +169,7 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
                         children: [
                           Expanded(
                             child: _infoCard(
-                              Icons.language,
+                              Icons.location_city,
                               'Capital',
                               dept.capital ?? 'No disponible',
                               const Color(0xFFCE1126),
@@ -178,140 +180,39 @@ class _DepartmentDetailViewState extends State<DepartmentDetailView> {
                             child: _infoCard(
                               Icons.attach_money,
                               'Moneda',
-                              'Peso colombiano (COP)',
+                              dept.currency ?? 'Peso colombiano (COP)',
                               const Color(0xFF00796B),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                      if (dept.municipalities != null) ...[
+                        const SizedBox(height: 12),
+                        _infoCard(
+                          Icons.map,
+                          'Municipios',
+                          '${dept.municipalities} municipios',
+                          const Color(0xFF5D4037),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Período de Gobierno',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Color(0xFF1A1A2E),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFFCE1126,
-                                          ).withValues(alpha: 0.1),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.play_circle_outline,
-                                          color: Color(0xFFCE1126),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      const Text(
-                                        'Inicio',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      Text(
-                                        dept.regionId != null
-                                            ? '${dept.regionId}'
-                                            : 'N/A',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Container(
-                                        height: 2,
-                                        color: const Color(
-                                          0xFFCE1126,
-                                        ).withOpacity(0.3),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(6),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFCE1126),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.star,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFF003893,
-                                          ).withValues(alpha: 0.1),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.stop_circle_outlined,
-                                          color: Color(0xFF003893),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      const Text(
-                                        'Fin',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      Text(
-                                        dept.currency ?? 'N/A',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      ],
+                      if (dept.language != null) ...[
+                        const SizedBox(height: 12),
+                        _infoCard(
+                          Icons.language,
+                          'Idioma',
+                          dept.language!,
+                          const Color(0xFF455A64),
                         ),
-                      ),
+                      ],
+                      if (dept.regionId != null) ...[
+                        const SizedBox(height: 12),
+                        _infoCard(
+                          Icons.terrain,
+                          'Región',
+                          'Región ${dept.regionId}',
+                          const Color(0xFF455A64),
+                        ),
+                      ],
                     ],
                   ),
                 ),
